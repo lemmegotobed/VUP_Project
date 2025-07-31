@@ -1,0 +1,254 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+
+    <link href="{% static 'css/css_admin/dash_admin.css' %}" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- <link rel="preconnect" href="https://fonts.googleapis.com"> -->
+    <!-- <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> -->
+    <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@100..700&display=swap" rel="stylesheet">
+   
+</head>
+<body>
+
+    <div class="menu-container">
+        <div class="profile-section">
+            <img src="{% static 'pic/profile.jpg' %}" alt="Profile Image" class="profile-image">
+            <p class="username">Admin</p>
+        </div>
+
+        <div class="menu-items">
+            <a class="menu-item home-btt active " href="{% url 'dashboard' %}">
+                <i class="fa-solid fa-chart-line"></i>แดชบอร์ด
+            </a>
+            <a class="menu-item profile-btt " href="{% url 'userdata' %}">
+                <i class="fa-regular fa-address-card"></i> ข้อมูลผู้ใช้
+            </a>
+            <a class="menu-item chat-btt " href="{% url 'report_admin' %}" >
+                <i class="fa-solid fa-circle-exclamation"></i> รายงานปัญหา
+            </a>
+            <a class="menu-item chat-btt" href="{% url 'report_identity_verification' %}">
+    <i class="fa-solid fa-circle-exclamation"></i> การยืนยันตัวตน
+</a>
+
+        </div>
+
+
+        <a href="{% url 'logout' %}" class="logout">
+            ออกจากระบบ
+        </a>
+    </div>
+
+    <div class="outer-box">
+        <div class="profile-header">
+            <i class="fa-solid fa-chart-line"></i>
+            <p class="my_profile_head">แดชบอร์ด</p>
+
+            <!-- <div class="dashboard-container"> -->
+                <!-- ข้อมูลสมาชิก -->
+                <!-- <div class="card">
+                    <h3>ข้อมูลสมาชิก</h3>
+                    <p>ทั้งหมด: {{ total_members }} คน</p>
+                    <p>ชาย: {{ male_members }} คน</p>
+                    <p>หญิง: {{ female_members }} คน</p>
+                    <button>ดูรายละเอียด</button>
+            </div> -->
+
+        </div>
+
+        <div class="content-box">
+
+            <div class="total-members">
+                <div class="icon-total-member">
+                    <i class="fa-solid fa-plus"></i>
+                </div>
+                <div class="detail-incard">
+                    <h1>{{ new_users_today }}</h1>
+                    <!-- <p>ผู้ใช้ถูกสร้างวันนี้</p> -->
+                </div>
+                <p>ผู้ใช้ถูกสร้างวันนี้</p>
+            </div>
+            
+            <div class="total-members">
+                <div class="icon-total-member">
+                    <i class="fa-solid fa-plus"></i>
+                </div>
+                    <h1>{{ events_created_today }}</h1>
+                    <p>กิจกรรมวันนี้</p>
+            </div>
+
+            <div class="total-members">
+                <div class="icon-total-member">
+                    <i class="fa-solid fa-plus"></i>
+                </div>
+                    <h1>{{ events_created_today }}</h1>
+                    <p>ถูกรายงานวันนี้</p>
+            </div>
+
+            <div class="total-members">
+                <div class="icon-total-member">
+                   <i class="fa-solid fa-users"></i> 
+                </div>
+                <h1>{{ total_users }}</h1>
+                <p>ผู้ใช้ถูกสร้าง</p>
+            </div> 
+            
+            <div class="total-members">
+                <div class="icon-total-member">
+                    <i class="fa-solid fa-chart-pie"></i>
+                </div>
+                <h1>{{ total_events }}</h1>
+                <p>กิจกรรมถูกสร้าง</p>
+
+            </div>
+
+        </div>
+
+        <div class="graph-content">
+            <div class="card">
+                <div class="chart-container">
+                    <h3><i class="fa-solid fa-user"></i>กราฟจำนวนสมาชิกที่สมัครในแต่ละเดือน</h3>
+                    
+                    <div class="box-chart">
+                        <div class="total-members">
+                            <div class="icon-total-member">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <h1>{{ total_members }}</h1>
+                            <p>ผู้ใช้ในระบบ</p>
+                        </div>
+                        
+                        <div class="total-members">
+                            <div class="icon-total-member">
+                                <i class="fa-solid fa-ban"></i>
+                            </div>
+                            <h1>{{ total_delete_member }}</h1>
+                            <p> บัญชีที่ถูกระงับ</p>
+                        </div>
+                        
+                    </div>
+                    <canvas id="signupsChart"></canvas>
+                </div>
+                
+            </div>
+        
+            
+    
+            <div class="card">
+                <!-- แสดงกราฟกิจกรรมที่ถูกสร้างในแต่ละเดือน -->
+                <h3><i class="fa-solid fa-puzzle-piece"></i>กราฟจำนวนกิจกรรมในแต่ละเดือน</h3>
+                <div class="chart-container">
+                    <div class="box-chart">
+
+                        <div class="total-members">
+                            <div class="icon-total-member">
+                                <i class="fa-solid fa-chart-pie"></i>
+                            </div>
+                            <h1>{{ total_events_active }}</h1>
+                            <p>กิจกรรมในระบบ</p>
+            
+                        </div>
+
+                        <div class="total-members">
+                            <div class="icon-total-member">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                            </div>
+                                <h1>{{ total_reported_events }}</h1>
+                                <p>กิจกรรมถูกระงับ</p>
+                        </div>
+                        
+                    </div>
+
+                    <canvas id="eventsChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+
+    
+    
+
+
+    </div>
+
+
+
+</body>
+
+<script>
+    // กราฟแสดงจำนวนกิจกรรมที่ถูกสร้างในแต่ละเดือน
+    var ctx1 = document.getElementById('eventsChart').getContext('2d');
+    var eventsChart = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: {{ event_months|safe }},
+            datasets: [{
+                label: 'กิจกรรมที่ถูกสร้างในแต่ละเดือน',
+                data: {{ event_counts|safe }},
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'เดือน'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'จำนวนกิจกรรม'
+                    },
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+    
+    // กราฟแสดงจำนวนสมาชิกที่สมัครในแต่ละเดือน
+    var ctx2 = document.getElementById('signupsChart').getContext('2d');
+    var signupsChart = new Chart(ctx2, {
+        type: 'line',
+        data: {
+            labels: {{ months|safe }},
+            datasets: [{
+                label: 'จำนวนสมาชิกที่สมัครในแต่ละเดือน',
+                data: {{ members_count|safe }},
+                borderColor: 'rgba(54, 162, 235, 1)',
+                fill: false,
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'เดือน'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'จำนวนสมาชิก'
+                    },
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+    </script>
+
+</html>

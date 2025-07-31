@@ -1,0 +1,152 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+
+    <link href="{% static 'css/css_admin/report_admin.css' %}" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@100..700&display=swap" rel="stylesheet">
+   
+</head>
+<body>
+
+    <div class="menu-container">
+        <div class="profile-section">
+            <img src="{% static 'pic/profile.jpg' %}" alt="Profile Image" class="profile-image">
+            <p class="username">Admin</p>
+        </div>
+
+        <div class="menu-items">
+            <a class="menu-item home-btt  " href="{% url 'dashboard' %}">
+                <i class="fa-solid fa-chart-line"></i>แดชบอร์ด
+            </a>
+            <a class="menu-item profile-btt " href="{% url 'userdata' %}">
+                <i class="fa-regular fa-address-card"></i> ข้อมูลผู้ใช้
+            </a>
+            <a class="menu-item chat-btt active" href="{% url 'report_admin' %}">
+                <i class="fa-solid fa-circle-exclamation"></i> รายงานปัญหา
+            </a>
+        </div>
+
+
+        <a href="{% url 'logout' %}" class="logout">
+            ออกจากระบบ
+        </a>
+    </div>
+
+    <div class="outer-box">
+        <div class="profile-header" style="display: inline-flex; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-circle-exclamation"></i> 
+            <p class="my_profile_head" style="margin: 0;">รายงานปัญหา</p>
+        </div>
+
+        <div class="content-box">
+
+            <div class="total-members">
+                <div class="icon-total-member">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                </div>
+                <h1> {{ total_reports }}</h1>
+                <p>รายงานปัญหาทั้งหมด</p>
+
+                <!-- <div class="report-types">
+                    <p>
+                        <i class="fa-solid fa-screwdriver-wrench"></i> ความผิดพลาดของระบบ : {{ system_issues }}
+                    </p>
+                    <p>
+                        <i class="fa-solid fa-user-shield"></i> พฤติกรรมไม่เหมาะสม : {{ inappropriate_behavior }}
+                    </p>
+                    <p>
+                        <i class="fa-solid fa-ellipsis-vertical"></i> อื่นๆ : {{ other_issues }}
+                    </p>
+                </div> -->
+                
+            </div>
+
+
+            <div class="total-members">
+                <div class="icon-total-member">
+                    <i class="fa-solid fa-clock"></i>
+                </div>
+                <h1>{{ total_waiting }}</h1>
+                <p>รอดำเนินการ</p>
+            </div>
+
+            <div class="total-members">
+                <div class="icon-total-member">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <h1>{{ total_warned }}</h1>
+                <p>การเตือน</p>
+            </div>
+
+            <div class="total-members">
+                <div class="icon-total-member">
+                    <i class="fa-solid fa-times"></i>
+                </div>
+                <h1>{{ total_rejected }}</h1>
+                <p>การปฏิเสธ</p>
+            </div>
+        </div>
+
+        <div id="successMessage">
+            <i class="fa fa-check-circle"></i> ลบสำเร็จแล้ว!
+        </div>
+              
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Event ID</th>
+                        <th>Reporter</th>
+                        <th>Event Owner</th>
+                        <th>Event Name</th>
+                        <th>Report Type</th>
+                        <th>Description</th>
+                        <th>Event Link</th>
+                        <th>Reported At</th>
+                        <th>Status</th>   
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for report in waiting_reports %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ report.event.id }}</td>
+                        <td>{{ report.reporter.username }}</td>
+                        <td>{{ report.event_owner.username }}</td>
+                        <td>{{ report.event.event_name }}</td>
+                        <td>{{ report.get_report_type_display }}</td>
+                        <td>{{ report.description }}</td>
+                        <td><a href="{% url 'event_detail_report' report.event.id %}" target="_blank">
+                            View Event
+                        </a>
+                        </td>
+                        <td>{{ report.created_at|date:"d M Y, H:i" }}</td>
+                        <td>{{ report.is_warned }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="10">ยังไม่มีการรายงานตอนนี้</td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+  
+
+</body>
+</html>

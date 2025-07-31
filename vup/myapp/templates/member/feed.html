@@ -1,0 +1,591 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VUP!</title>
+    
+    <link href="{% static 'css/css_member/feed.css' %}" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@100..700&display=swap" rel="stylesheet">
+</head>
+
+<body>   
+
+    <!-- Modal แสดง Terms -->
+<div id="terms-modal" style="display: none;">
+  <div class="modal-bg-terms">
+    <div class="modal-box-terms">
+        <div class="modal-terms-header">
+            <h3>📜 ข้อกำหนดการใช้งาน (Terms of Use)</h3>
+        </div>
+
+
+  <p class="indented">
+    เว็บไซต์นี้เป็นแพลตฟอร์มเพื่อเปิดโอกาสให้ผู้ใช้งานสามารถสร้างกิจกรรมและค้นหาเพื่อนร่วมกิจกรรม เช่น เล่นกีฬา ดูหนัง เดินทาง หรือเข้าร่วมกิจกรรมต่าง ๆ โดยมีวัตถุประสงค์เพื่อส่งเสริมมิตรภาพและการมีปฏิสัมพันธ์ทางสังคมในเชิงสร้างสรรค์
+  </p>
+
+  <ol class="terms-list">
+     <li>
+        <strong>อายุผู้ใช้งานขั้นต่ำ :</strong> ผู้ใช้งานต้องมีอายุไม่ต่ำกว่า 18 ปีบริบูรณ์ หากตรวจพบว่าข้อมูลอายุไม่ตรงตามจริง ระบบมีสิทธิ์ระงับบัญชีผู้ใช้งานโดยไม่ต้องแจ้งล่วงหน้า
+      </li>
+      <li>
+        <strong>ความรับผิดชอบต่อเนื้อหา :</strong> ผู้ใช้งานเป็นผู้รับผิดชอบต่อเนื้อหาที่ตนโพสต์ทั้งหมด ทีมงานไม่รับรองความถูกต้อง ความเหมาะสม หรือผลกระทบใด ๆ จากเนื้อหานั้น
+      </li>
+      <li>
+        <strong>ห้ามโพสต์เนื้อหาที่ผิดกฎหมายหรือไม่เหมาะสม :</strong> ห้ามโพสต์เนื้อหาที่ผิดกฎหมาย ผิดจริยธรรม ละเมิดสิทธิของผู้อื่น หรือมีลักษณะหลอกลวง คุกคาม ลามกอนาจาร หรือโฆษณาแอบแฝง
+      </li>
+      <li>
+        <strong>ความเสี่ยงในการพบปะ:</strong> ผู้ใช้งานต้องใช้วิจารณญาณในการนัดพบหรือเข้าร่วมกิจกรรมกับผู้อื่น ทีมงานไม่รับผิดชอบต่ออันตรายหรือเหตุการณ์ที่เกิดขึ้นจากการนัดหมาย
+      </li>
+      <li>
+        <strong>คำแนะนำเพื่อความปลอดภัย :</strong> แนะนำให้นัดหมายในที่สาธารณะ แจ้งให้บุคคลใกล้ชิดทราบ และหลีกเลี่ยงการเปิดเผยข้อมูลส่วนตัวในระยะแรกของการติดต่อ
+      </li>
+      <li>
+        <strong>การระงับการใช้งาน :</strong> ทีมงานขอสงวนสิทธิ์ในการลบเนื้อหา ระงับบัญชี หรือปิดกั้นการใช้งานโดยไม่ต้องแจ้งล่วงหน้า หากพบการละเมิดเงื่อนไข
+      </li>
+      <li>
+        <strong>ซอฟต์แวร์ให้บริการ “ตามสภาพที่เป็นอยู่” (As-Is) :</strong> ซอฟต์แวร์นี้ให้บริการโดยไม่มีการรับประกันใด ๆ ทั้งสิ้น ผู้ใช้งานยอมรับความเสี่ยงในการใช้งานด้วยตนเอง
+      </li>
+  </ol>
+
+  <div class="terms-button-wrap">
+    <button onclick="closeTermsModal()" class="confirm-btn">รับทราบ</button>
+  </div>
+</div>
+
+<!-- <p>
+เว็บไซต์นี้ให้บริการเป็นสื่อกลางสำหรับเชื่อมต่อผู้ใช้ที่มีความสนใจในกิจกรรมต่าง ๆ โดยไม่มีการตรวจสอบประวัติหรือยืนยันตัวตนผู้ใช้ในระบบ
+</p>
+
+<h3>คำปฏิเสธความรับผิด (Disclaimer)</h3>
+<p>
+ผู้ใช้ตกลงและเข้าใจว่า ความรับผิดชอบทั้งหมดในการติดต่อ พูดคุย หรือพบปะกับผู้ใช้อื่นในชีวิตจริง เป็นความรับผิดชอบส่วนบุคคลโดยสมบูรณ์
+</p>
+
+<ul>
+  <li>ผู้ให้บริการระบบจะไม่รับผิดชอบต่อความเสียหาย อันตราย หรือเหตุการณ์ไม่พึงประสงค์ใด ๆ ที่เกิดขึ้นจากการใช้งานเว็บไซต์</li>
+  <li>ผู้ใช้ควรใช้วิจารณญาณของตนเองในการติดต่อและแลกเปลี่ยนข้อมูลส่วนบุคคล</li>
+  <li>ขอแนะนำให้มีการพบเจอในสถานที่สาธารณะ และแจ้งบุคคลที่ไว้วางใจทราบทุกครั้ง</li>
+</ul>
+
+<p>
+การใช้งานระบบถือว่าผู้ใช้ยินยอมตามข้อกำหนดข้างต้นโดยไม่มีข้อโต้แย้งใด ๆ
+</p> -->
+
+      <!-- <button onclick="closeTermsModal()">รับทราบ</button>
+    </div> -->
+  </div>
+</div>
+
+    <!-- เมนู -->
+    <div class="menu-container">
+        <div class="profile-section">
+            <img src="{{ member_data.profile.url }}" alt="Profile Image" class="profile-image">
+            <p class="username">{{ member_data.username }}</p>
+            <p class="userid">{{ member_data.userid }}</p>
+            <button id="openModal" class="new-event-btn"><i class="fa-solid fa-circle-plus"></i>สร้างกิจกรรม</button>
+        </div>
+
+        <div class="menu-items">
+            <a class="menu-item home-btt active " href="{% url 'feed' %}">
+                <i class="fa-solid fa-earth-americas"></i>ฟีด
+            </a>
+            <a class="menu-item profile-btt " href="{% url 'profile' %}">
+                <i class="fas fa-user"></i> โปรไฟล์
+            </a>
+            <a class="menu-item chat-btt " href="{% url 'chat' %}">
+                <i class="fas fa-comment"></i> แชท
+            </a>
+        </div>
+
+        <a href="{% url 'logout' %}" class="logout">
+            ออกจากระบบ
+        </a>
+    </div>
+
+
+
+    <div class="home_page" id="home_page">
+
+        <!-- ค้นหาแบบข้อความ -->
+        <div class="search-container">
+           
+            <div class="search-box">
+                <form method="get" action="{% url 'search_events' %}" class="search-form">
+                    <div class="input-icon">
+                        <i class="fas fa-search" id="search-icon"></i> 
+                        <input 
+                            type="text" 
+                            name="query" 
+                            value="{{ query }}" 
+                            placeholder="ค้นหาที่นี่..." 
+                            class="form-control" 
+                            id="search-input"
+                            oninput="toggleClearButton()"  
+                        >
+                        <!-- ปุ่มล้างคำค้นหาที่จะปรากฏเมื่อมีการกรอกคำค้น -->
+                        <button type="button" class="clear-button" id="clear-button" onclick="clearSearch()" style="display: none;">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        
+        <p class="feed">ฟีดตอนนี้</p>
+
+        <!-- post event -->
+        <div class="event-container">
+            {% for event in events %}
+            <div class="event-post">
+                <!-- Profile and Event Details -->
+                <div class="post-left">
+                    <!-- รายละเอียดผู้โพสต์ -->
+                    <div class="post_member">
+                        <img src="{{ event.created_by.profile.url }}" alt="Profile Image" class="profile-image-post">
+                        <div class="member-info">
+                            <div class="username-container">
+                                <a href="{% if event.created_by.id == request.user.id %}{% url 'profile' %}{% else %}{% url 'member_profile' event.created_by.id %}{% endif %}" class="username-post">
+                                    {{ event.created_by.username }}
+                                </a>
+                            </div>
+                            
+
+                            <p class="location">
+                                <strong>กำลังจะไปที่... </strong>
+                                <i class="fa-solid fa-location-dot location-icon"></i>
+                                <a href="https://www.google.com/maps/search/?api=1&query={{ event.location }}" target="_blank">{{ event.location }}</a>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- รายละเอียดอีเวนต์ -->
+                    <div class="detail-post">
+                        <h2>{{ event.event_name }}</h2>
+                        <p>{{ event.event_title }}</p>
+                    </div>
+
+                    <!-- รายละเอียดเพิ่มเติม (วัน, หมวดหมู่, จังหวัด) -->
+                    <div class="filter-box-post">
+                        <!-- <div class="date">
+                            <i class="fa-solid fa-calendar-days"></i>
+                            <p>: {{ event.event_datetime }}</p>
+                        </div> -->
+
+                        <div class="date">
+                            <i class="fa-solid fa-calendar-days"></i>
+                            <p>
+                                : {{ event.event_datetime|date:"d M Y H:i" }}
+                                {% if event.event_end_datetime %}
+                                    - {{ event.event_end_datetime|date:"d M Y H:i" }}
+                                {% endif %}
+                            </p>
+                        </div>
+
+                        
+                        <div class="participants">
+                            <i class="fa-solid fa-user"></i>
+                            <p>: {{ event.max_participants }}</p>
+                        </div>
+                        <div class="category">
+                            <i class="fa-solid fa-shapes"></i>
+                            <p>: {{ event.category }}</p>
+                        </div>
+                        <div class="province">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <p>: {{ event.province }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- post-right -->
+                <div class="post-right">
+                    <div class="time-since-created">
+                        <!-- <i class="fa-solid fa-clock"></i> -->
+                        <span class="time-text">{{ event.time_since }}</span>
+                    </div>
+                    
+
+                    <!-- ซ่อนเฉพาะ report-event และ join-btn-container สำหรับเจ้าของ -->
+                    {% if request.user.id != event.created_by.id %}
+                    <div class="report-event">
+                        <a class="btn-report" href="{% url 'submit_report' event.id %}">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                            <span class="tooltip-text">รายงานกิจกรรมนี้</span>
+                        </a>
+                    </div>
+                    
+                    <div class="join-btn-container">
+                        <button class="join-btn" onclick="openJoinPopup({{ event.id }}, '{{ event.name|escapejs }}')">
+                            <i class="fa-regular fa-hand"></i><p>ฉันต้องการเข้าร่วม</p>
+                        </button>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- ป๊อปอัป -->
+                    <div class="popup-container" id="join-popup" style="display: none;">
+                        <div class="popup-content">
+                            <div class="modal-icon">
+                                <i class="fa-solid fa-exclamation-circle"></i>
+                            </div>
+                            <h3>คำเตือนความปลอดภัย</h3>
+                            <div class="warning_join">
+                                <div class="disclaimer">
+                                    <strong>กรุณาตรวจสอบกิจกรรมและผู้จัดให้รอบคอบก่อนเข้าร่วม</strong>
+                                    <br>ระบบจะไม่รับผิดชอบต่อเหตุการณ์ใด ๆ ที่เกิดขึ้นนอกระบบ
+                                    <!-- <strong>ทางระบบจะไม่รับผิดชอบต่อเหตุการณ์ใด ๆ ที่เกิดขึ้นนอกระบบ</strong><br> -->
+                                    <!-- รวมถึงการพบเจอในชีวิตจริง กรุณาตรวจสอบกิจกรรมและผู้สร้างกิจกรรมโดยใช้วิจารณญาณในการตัดสินใจในเข้าร่วมครั้งนี้ -->
+                                </div>
+                            </div>
+
+                            <!-- <p>คุณต้องการส่งคำขอคำเข้ารวมกิจกรรมนี้ใช่ไหม?</p> -->
+
+                            <div class="popup-actions">
+                                <button class="popup-btn confirm-btn" onclick="confirmJoin()">
+                                    <i class="fa-solid fa-check"></i>ส่งคำขอ
+                                </button>
+                                <button class="popup-btn cancel-btn" onclick="closeJoinPopup()">
+                                    <i class="fa-solid fa-times"></i>ยกเลิก
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                </div>
+            </div>
+            {% empty %}
+            <p class="no_event">- ยังไม่มีกิจกรรมตอนนี้ -</p>
+            {% endfor %}
+        </div>
+
+        <div id="eventModal" class="modal">
+            {% include 'member/event/new_event.html' %}
+        </div>
+
+
+        <div>
+            {% include 'member/notification.html' %}
+        </div>
+
+   
+
+</div>
+
+
+<!-- เปลี่ยนไอคอนเป็นย้อนกลับ -->
+<script>
+    const searchInput = document.getElementById('search-input');
+    const searchIcon = document.getElementById('search-icon');
+    const clearButton = document.getElementById('clear-button');
+
+    // ฟังก์ชันตรวจสอบการกรอกคำค้นหา
+    function toggleClearButton() {
+        if (searchInput.value) {
+            // ถ้ามีคำค้นหาจะซ่อนไอคอนค้นหาและแสดงไอคอนล้าง
+            searchIcon.style.display = 'none';
+            clearButton.style.display = 'inline-block';
+        } else {
+            // ถ้าไม่มีคำค้นหาจะแสดงไอคอนค้นหากลับ
+            searchIcon.style.display = 'inline-block';
+            clearButton.style.display = 'none';
+        }
+    }
+
+    // ฟังก์ชันล้างคำค้น
+    function clearSearch() {
+        searchInput.value = '';  // เคลียร์คำค้นหา
+        searchInput.focus();  // ตั้งโฟกัสที่ช่อง input
+        searchIcon.style.display = 'inline-block';  // แสดงไอคอนค้นหา
+        clearButton.style.display = 'none';  // ซ่อนไอคอนล้าง
+        // รีเฟรชหน้าหลัก
+        document.querySelector('.search-form').submit();
+    }
+
+    // เรียกฟังก์ชันเพื่อให้มีการเปลี่ยนไอคอนตั้งแต่เริ่มต้น
+    toggleClearButton();
+</script>
+
+<!-- new_event -->
+<script>
+    const openModal = document.getElementById("openModal");
+    const modal = document.getElementById("eventModal");
+    const closeModal = document.querySelector(".close");
+    const eventForm = document.getElementById('eventForm');
+    const homePageDiv = document.getElementById('home_page');
+
+    openModal.onclick = function() {
+        modal.classList.add("active");
+    }
+
+    closeModal.onclick = function() {
+        modal.classList.remove("active");
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.classList.remove("active");
+        }
+    }
+
+    eventForm.addEventListener('submit', function(e) {
+        e.preventDefault();  // ป้องกันการส่งฟอร์มแบบปกติ
+
+        const formData = new FormData(eventForm);
+        fetch("{% url 'new_event' %}", {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                modal.classList.remove("active");  // ปิด pop-up
+                window.location.reload();  // รีเฟรชหน้าเว็บเพื่อแสดง Event ใหม่
+            }
+        })
+        .catch(error => console.log('Error:', error));
+    });
+</script>
+
+<!-- ส่งคำขอเข้าร่วม -->
+
+<!-- <script>
+function showJoinModal(eventId) {
+    document.getElementById("join-modal").style.display = "block";
+}
+
+function closeJoinModal() {
+    document.getElementById("join-modal").style.display = "none";
+}
+
+function sendJoinRequest(eventId) {
+    fetch(`/event/${eventId}/join/`, {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+        },
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            alert(data.message);
+            closeJoinModal();
+        });
+}
+</script> -->
+<!-- <script>
+function openJoinModal() {
+    document.getElementById("join-modal").style.display = "flex";
+}
+
+function closeJoinModal() {
+    document.getElementById("join-modal").style.display = "none";
+}
+
+function confirmJoin(eventId) {
+    fetch(`/event/${eventId}/join/`, {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+            "Content-Type": "application/json",
+        },
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            alert(data.message);
+            closeJoinModal();
+        })
+        .catch((error) => console.error("Error:", error));
+}
+
+</script> -->
+
+<!-- แก้ไขอีเว้น -->
+<!-- <script>
+
+function showJoinModal(eventId, eventName) {
+    // แสดงชื่ออีเวนต์ใน Modal
+    const modalText = document.getElementById("modal-text");
+    modalText.textContent = `Are you sure you want to join "${eventName}" this event?`;
+
+    // ตั้งค่า Event ID เพื่อส่งในฟังก์ชัน sendJoinRequest
+    const confirmButton = document.querySelector("#join-modal button:first-child");
+    confirmButton.setAttribute("onclick", `sendJoinRequest(${eventId})`);
+
+    // แสดง Modal
+    document.getElementById("join-modal").style.display = "block";
+}
+
+function closeJoinModal() {
+    document.getElementById("join-modal").style.display = "none";
+}
+
+function sendJoinRequest(eventId) {
+    fetch(`/event/${eventId}/join/`, {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+        },
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            alert(data.message);
+            closeJoinModal(); // ปิด Modal หลังจากส่งคำขอสำเร็จ
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+        });
+}
+    
+    </script> -->
+
+<!-- ส่งคำขอเข้าร่วม -->
+<script>
+    let selectedEventId = null;
+
+    function openJoinPopup(eventId, eventName) {
+        selectedEventId = eventId;  // เก็บ Event ID สำหรับการส่งคำขอ
+        document.getElementById('join-popup').style.display = 'flex';
+    }
+
+    function closeJoinPopup() {
+        document.getElementById('join-popup').style.display = 'none';
+    }
+
+    function confirmJoin() {
+        if (!selectedEventId) return;
+
+        fetch(`/events/${selectedEventId}/send-request/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',  // ใช้สำหรับ CSRF Protection
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            closeJoinPopup();  // ปิดป๊อปอัปหลังจากบันทึกคำขอ
+        })
+        .catch(error => console.error('Error:', error));
+    }
+</script>
+
+<!-- <script>
+    function showNotification(message, type = 'success') {
+    const notificationBar = document.getElementById('notificationBar');
+    const notificationMessage = document.getElementById('notificationMessage');
+
+    // ตั้งค่าข้อความแจ้งเตือน
+    notificationMessage.textContent = message;
+
+    // ตั้งสีพื้นหลังตามประเภท
+    if (type === 'success') {
+        notificationBar.style.backgroundColor = '#4caf50'; // สีเขียว
+    } else if (type === 'error') {
+        notificationBar.style.backgroundColor = '#f44336'; // สีแดง
+    }
+
+    // แสดงแจ้งเตือน
+    notificationBar.classList.add('show');
+    notificationBar.style.display = 'block';
+
+    // ซ่อนแจ้งเตือนหลังจาก 3 วินาที
+    setTimeout(() => {
+        notificationBar.classList.remove('show');
+        notificationBar.classList.add('hide');
+
+        // ลบแจ้งเตือนออกหลังจาก Animation ซ่อนเสร็จ
+        setTimeout(() => {
+            notificationBar.style.display = 'none';
+            notificationBar.classList.remove('hide');
+        }, 500); // เวลาเดียวกับ transition
+    }, 3000); // 3 วินาที
+}
+
+</script> -->
+
+<!-- <script>
+    // ตัวอย่างการส่งคำขอไปยัง Backend
+fetch(`/send-join-request/${eventId}/`, {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCSRFToken(),
+    },
+})
+    .then(response => response.json())
+    .then(data => {
+        if (response.ok) {
+            showNotification(data.message, 'success'); // แสดงข้อความสำเร็จ
+        } else {
+            showNotification(data.message, 'error'); // แสดงข้อความข้อผิดพลาด
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('เกิดข้อผิดพลาดบางอย่าง', 'error');
+    });
+
+// ฟังก์ชันสำหรับดึง CSRF Token
+function getCSRFToken() {
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+        const [name, value] = cookie.trim().split('=');
+        if (name === 'csrftoken') {
+            return value;
+        }
+    }
+    return null;
+}
+
+</script> -->
+
+<!-- ads -->
+<!-- <script>
+    let currentIndex = 0;
+    const slides = document.querySelector(".slides");
+    const totalSlides = document.querySelectorAll(".slide").length;
+
+    function moveSlide() {
+        currentIndex = (currentIndex + 1) % totalSlides;
+        slides.style.transform = `translateX(${-currentIndex * 100}%)`;
+    }
+    setInterval(moveSlide, 3000);
+
+    function filterEvents(keyword) {
+        let events = document.querySelectorAll("#event-list li");
+        events.forEach(event => {
+            if (event.getAttribute("data-keyword") === keyword) {
+                event.style.display = "block";
+            } else {
+                event.style.display = "none";
+            }
+        });
+    }
+</script> -->
+
+<script>
+  window.addEventListener('DOMContentLoaded', function () {
+    const hasSeenTerms = sessionStorage.getItem('seen_terms');
+    if (!hasSeenTerms) {
+      document.getElementById("terms-modal").style.display = "block";
+    }
+  });
+
+  function closeTermsModal() {
+    document.getElementById("terms-modal").style.display = "none";
+    sessionStorage.setItem('seen_terms', 'true');
+  }
+</script>
+
+</body>
+</html>

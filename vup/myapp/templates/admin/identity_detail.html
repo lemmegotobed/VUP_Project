@@ -1,0 +1,23 @@
+
+
+{% block content %}
+<div class="identity-detail">
+    <h2>รายละเอียดการยืนยันตัวตน</h2>
+    <p><strong>ชื่อผู้ใช้:</strong> {{ member.username }}</p>
+    <p><strong>ชื่อจริง:</strong> {{ member.first_name }}</p>
+    <p><strong>อีเมล:</strong> {{ member.email }}</p>
+    <p><strong>วันที่ส่ง:</strong> {{ verification.submitted_at }}</p>
+    <p><strong>สถานะ:</strong> {{ verification.get_status_display }}</p>
+    <p><strong>หมายเหตุ:</strong> {{ verification.reviewer_note|default:"-" }}</p>
+
+    {% if verification.id_card_image %}
+        <p><strong>บัตรประชาชน:</strong><br>
+        <img src="{{ verification.id_card_image.url }}" width="300"></p>
+    {% endif %}
+
+    {% if verification.selfie_image %}
+        <p><strong>ภาพเซลฟี่:</strong><br>
+        <img src="{{ verification.selfie_image.url }}" width="300"></p>
+    {% endif %}
+</div>
+{% endblock %}

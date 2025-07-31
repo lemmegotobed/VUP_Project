@@ -1,0 +1,172 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+
+    <link href="{% static 'css/css_admin/identity.css' %}" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- <link rel="preconnect" href="https://fonts.googleapis.com"> -->
+    <!-- <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> -->
+    <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@100..700&display=swap" rel="stylesheet">
+   
+</head>
+<body>
+
+    <div class="menu-container">
+        <div class="profile-section">
+            <img src="{% static 'pic/profile.jpg' %}" alt="Profile Image" class="profile-image">
+            <p class="username">Admin</p>
+        </div>
+
+        <div class="menu-items">
+            <a class="menu-item home-btt " href="{% url 'dashboard' %}">
+                <i class="fa-solid fa-chart-line"></i>แดชบอร์ด
+            </a>
+            <a class="menu-item profile-btt " href="{% url 'userdata' %}">
+                <i class="fa-regular fa-address-card"></i> ข้อมูลผู้ใช้
+            </a>
+            <a class="menu-item chat-btt " href="{% url 'report_admin' %}" >
+                <i class="fa-solid fa-circle-exclamation"></i> รายงานปัญหา
+            </a>
+            <a class="menu-item chat-btt active " href="{% url 'report_identity_verification' %}">
+    <i class="fa-solid fa-circle-exclamation"></i> การยืนยันตัวตน
+</a>
+
+        </div>
+
+
+        <a href="{% url 'logout' %}" class="logout">
+            ออกจากระบบ
+        </a>
+    </div>
+
+
+    <div class="box">
+
+{% block content %}
+    <h2>รายงานการยืนยันตัวตน</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ชื่อผู้ใช้</th>
+                <th>วันที่ส่ง</th>
+                <th>สถานะ</th>
+                <th>หมายเหตุจากผู้ตรวจสอบ</th>
+                <th>ตรวจสอบ</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for verification in identity_verifications %}
+                <tr>
+                    <td>{{ verification.user.username }}</td>
+                    <td>{{ verification.submitted_at|date:"Y-m-d H:i" }}</td>
+                    <td>
+                        {% if verification.status == 'pending' %}
+                            <span class="badge pending">รอตรวจสอบ</span>
+                        {% elif verification.status == 'approved' %}
+                            <span class="badge approved">ผ่านการตรวจสอบ</span>
+                        {% elif verification.status == 'rejected' %}
+                            <span class="badge rejected">ไม่ผ่าน</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ verification.reviewer_note|default:"ไม่มีหมายเหตุ" }}</td>
+<td>
+  <button onclick="openModal(
+    '{{ verification.user.username }}',
+    '{{ verification.get_status_display }}',
+    '{{ verification.id }}',
+    '{{ verification.id_card_image.url }}',
+    '{{ verification.selfie_image.url }}',
+    `{{ verification.reviewer_note|default:'' }}`
+  )">ดูรายละเอียด</button>
+</td>
+
+
+
+
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="4">ไม่มีการยืนยันตัวตนในระบบ</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+</div>
+
+<!-- Popup Modal -->
+<div id="identityModal" class="modal" style="display:none;">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    
+    <h2>รายละเอียดการยืนยันตัวตน</h2>
+    <p><strong>ชื่อผู้ใช้:</strong> <span id="modalUsername"></span></p>
+    <p><strong>สถานะปัจจุบัน:</strong> <span id="modalStatus"></span></p>
+    <p><strong>หมายเหตุ:</strong></p>
+    <textarea id="modalNote" rows="3" style="width: 100%;"></textarea>
+
+    <div class="image-section">
+      <p><strong>บัตรประชาชน:</strong></p>
+      <img id="idCardImage" src="" alt="ID Card" style="width: 100%; max-width: 15px;">
+      <p><strong>เซลฟี่:</strong></p>
+      <img id="selfieImage" src="" alt="Selfie" style="width: 100%; max-width: 150px;">
+    </div>
+
+    <div style="margin-top: 15px;">
+      <button onclick="submitStatus('approved')">✅ อนุมัติ</button>
+      <button onclick="submitStatus('rejected')">❌ ปฏิเสธ</button>
+    </div>
+
+    <!-- ซ่อน ID สำหรับใช้งาน -->
+    <input type="hidden" id="verificationId">
+  </div>
+</div>
+
+
+<script>
+function openModal(username, status, verificationId, idCardUrl, selfieUrl, note) {
+    document.getElementById("modalUsername").innerText = username;
+    document.getElementById("modalStatus").innerText = status;
+    document.getElementById("idCardImage").src = idCardUrl;
+    document.getElementById("selfieImage").src = selfieUrl;
+    document.getElementById("modalNote").value = note;
+    document.getElementById("verificationId").value = verificationId;
+    document.getElementById("identityModal").style.display = "block";
+}
+
+function closeModal() {
+    document.getElementById("identityModal").style.display = "none";
+}
+
+function submitStatus(action) {
+    const verificationId = document.getElementById("verificationId").value;
+    const reviewerNote = document.getElementById("modalNote").value;
+    const csrfToken = '{{ csrf_token }}';
+
+    fetch('{% url "update_identity_status" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': csrfToken
+        },
+        body: `verification_id=${verificationId}&action=${action}&reviewer_note=${encodeURIComponent(reviewerNote)}`
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
+        closeModal();
+        location.reload(); // หรือเปลี่ยนข้อมูลในแถวแบบ dynamic ก็ได้
+    })
+    .catch(err => alert('เกิดข้อผิดพลาด'));
+}
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,68 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Detail</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+
+    <link href="{% static 'css/css_member/review/review_events.css' %}" rel="stylesheet">
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@100..700&display=swap" rel="stylesheet">
+   
+</head>
+<body>
+    <div class="outer-box"> 
+        <a href="{% url 'review_event' event.id %}" class="centered-link">
+            <i class="fa-solid fa-chevron-left"></i> กลับไปที่รายชื่อสมาชิก
+        </a>
+        <div class="head-info">
+            <p>
+              <span class="icon-container">
+                <i class="fa-solid fa-star"></i> 
+              </span>
+              รีวิว <strong>{{ participant.username }}</strong> ในกิจกรรม <strong> {{ event.event_name }}</strong>
+            </p>
+        </div>
+          
+        
+        <div class="review-user-info">
+            <div class="review-user-info-head">
+                <img src="{{ participant.profile.url }}" alt="{{ participant.username }}" class="profile-pic">
+            </div>
+
+            <div class="review-form">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="{{ form.attendance_status.id_for_label }}">สถานะการเข้าร่วม:</label>
+                        {{ form.attendance_status }}
+                    </div>
+                
+                
+                    <div class="form-group">
+                        <label for="{{ form.comment.id_for_label }}">ความคิดเห็น:</label>
+                        {{ form.comment }}
+                    </div>
+                    
+                 <button type="submit" class="btn-save">บันทึกรีวิว</button>
+                    
+                </form>
+                
+            </div>
+           
+            
+        </div>
+
+    </div>
+
+</body>

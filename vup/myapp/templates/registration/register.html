@@ -1,0 +1,200 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สมัครสมาชิก</title>
+    
+    <link href="{% static 'css/css_registration/register.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Prompt:wght@100..900&family=Taviraj:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@100..700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    
+    <div class="container">
+        <div class="Create-Account">
+            <i class="fa-solid fa-user-plus"></i>
+            <h2>สมัครสมาชิก</h2>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" autocomplete="on">
+            {% csrf_token %}
+
+            <div class="pic">
+                <img id="profile-preview" src="{% static 'pic/profile.jpg' %}" alt="Profile Preview" style="max-width: 100%; border-radius: 8px;">
+            </div>
+            
+            <div class="form-group">
+                <label for="id_profile">รูปโปรไฟล์</label>
+                <input type="file" name="profile" id="id_profile" accept="image/*" onchange="previewImage(event)" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="id_first_name">ชื่อ</label>
+                <input type="text" id="id_first_name" name="first_name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="id_last_name">นามสกุล</label>
+                <input type="text" id="id_last_name" name="last_name" required>
+            </div>
+            
+            <div class="form-group">
+                <label>เพศ</label>
+                <div class="sex-selection">
+                    <div class="sex-option">
+                        <input type="radio" id="male" name="sex" value="ชาย" required>
+                        <label for="male">
+                            <i class="fa-solid fa-mars" style="color: #4abfe2;"></i> ชาย
+                        </label>
+                    </div>
+                    <div class="sex-option">
+                        <input type="radio" id="female" name="sex" value="หญิง" required>
+                        <label for="female">
+                            <i class="fa-solid fa-venus" style="color: #e672b0;"></i> หญิง
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div class="form-group">
+                <label for="id_birthdate">วันเกิด</label>
+                <input type="date" id="id_birthdate" name="birthdate" required>
+            </div> -->
+            <div class="form-group">
+                <label for="id_birthdate">วันเกิด</label>
+                <div class="username-check">
+                    <input type="date" id="id_birthdate" name="birthdate" required>
+                    <i id="birthdateStatusIcon" class="birthdate-default"></i>
+                </div>
+            </div>
+            <p id="birthdateErrorMessage" class="error-message"></p> 
+
+            <div class="form-group">
+                <label for="id_username">ชื่อผู้ใช้</label>
+                <div class="username-check">
+                    <input type="text" id="id_username" name="username" required>
+                    <i id="usernameStatusIcon" class="fa-solid fa-circle-check username-default"></i>
+                </div>
+            </div>
+            <p id="usernameErrorMessage" class="error-message"></p> 
+            
+            <div class="form-group">
+                <label for="id_email">อีเมล</label>
+                <input type="email" id="id_email" name="email" required>
+            </div>
+            <p id="emailErrorMessage" class="error-message"></p>
+
+            <div class="form-group">
+                <label for="id_password1">รหัสผ่าน</label>
+                <input type="password" id="id_password1" name="password1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="id_password2">ยืนยันรหัสผ่าน</label>
+                <input type="password" id="id_password2" name="password2" required>
+            </div>
+
+            <button type="submit">สร้างบัญชี</button>
+        </form>
+
+        <p>คุณมีบัญชีผู้ใช้แล้วใช่ไหม? <a href="{% url 'login' %}">เข้าสู่ระบบ</a></p>
+    </div>
+
+</body>
+
+<script>
+    function previewImage(event) {
+        const input = event.target;
+        const preview = document.getElementById('profile-preview');
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                preview.src = e.target.result; 
+                preview.style.display = 'block'; 
+            };
+
+            reader.readAsDataURL(input.files[0]); 
+        } else {
+            preview.src = ""; 
+            preview.style.display = 'none';
+        }
+    }   
+</script>
+
+<script>
+    document.getElementById("id_username").addEventListener("input", function() {
+        let username = this.value;
+        let statusIcon = document.getElementById("usernameStatusIcon");
+        let errorMessage = document.getElementById("usernameErrorMessage");
+
+        if (username.length > 0) {
+            statusIcon.style.display = "block";
+        } else {
+            statusIcon.style.display = "none";
+            errorMessage.style.display = "none";
+            return;
+        }
+
+        statusIcon.className = "fa-solid fa-spinner username-loading"; 
+
+        fetch(`/check-username/register/?username=${username}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.exists) {
+                    statusIcon.className = "fa-solid fa-circle-xmark username-invalid"; 
+                    errorMessage.innerText = "ชื่อผู้ใช้นี้ถูกใช้แล้ว กรุณาเปลี่ยนชื่อใหม่";
+                    errorMessage.style.display = "block";
+                } else {
+                    statusIcon.className = "fa-solid fa-circle-check username-valid"; 
+                    errorMessage.style.display = "none";
+                }
+            })
+            .catch(error => console.error("Error checking username:", error));
+    });
+</script>
+
+<script>
+    document.getElementById("id_birthdate").addEventListener("change", function() {
+        let birthdate = this.value;
+        let statusIcon = document.getElementById("birthdateStatusIcon");
+        let errorMessage = document.getElementById("birthdateErrorMessage");
+
+        if (birthdate) {
+            statusIcon.style.display = "block";
+        } else {
+            statusIcon.style.display = "none";
+            errorMessage.style.display = "none";
+            return;
+        }
+
+        statusIcon.className = "fa-solid fa-spinner birthdate-loading";  // Loading state
+
+        // เปลี่ยนวันที่เป็น object
+        const selectedDate = new Date(birthdate);
+        const today = new Date();
+        const age = today.getFullYear() - selectedDate.getFullYear();
+        const m = today.getMonth() - selectedDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < selectedDate.getDate())) {
+            age--;
+        }
+
+        if (age < 18) {
+            statusIcon.className = "fa-solid fa-circle-xmark birthdate-invalid"; 
+            errorMessage.innerText = "คุณต้องมีอายุอย่างน้อย 18 ปีบริบูรณ์เพื่อสมัคร";
+            errorMessage.style.display = "block";
+        } else {
+            statusIcon.className = "fa-solid fa-circle-check birthdate-valid"; 
+            errorMessage.style.display = "none";
+        }
+    });
+</script>
+</html>

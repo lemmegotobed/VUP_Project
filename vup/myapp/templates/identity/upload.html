@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <title>HOME</title> -->
+    
+    {% load static %}
+    <!-- <link href="{% static 'css/css_member/member_profile.css' %}" rel="stylesheet"> -->
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Taviraj:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@100..700&display=swap" rel="stylesheet">
+</head>
+<style>
+body {
+    font-family: "Anuphan", sans-serif;
+    background-color: #f5f7fa;
+    margin: 0;
+  }
+
+  #identity-verify-form {
+    /* margin-top: 10px; */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    padding: 30px 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    max-width: 400px;
+    width: 100%;
+    z-index: 1000;
+    font-size: 12px;
+  }
+
+  #identity-verify-form h2 {
+    text-align: center;
+    color: #2c3e50;
+  }
+
+  #identity-verify-form ol {
+    padding-left: 10px;
+    margin-bottom: 10px;
+    
+  }
+
+  #identity-verify-form label {
+    font-weight: bold;
+    /* margin-top: 10px; */
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .identity-preview-box {
+    width: 100%;
+    height: 100px;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-color: #fafafa;
+  }
+
+  .identity-preview-box img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+.identity-verify-button {
+    font-family: "Anuphan", sans-serif;
+  background-color: #4d7dba;
+  color: white;
+  padding: 10px 0px;
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+  width: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin: 0 auto; /* 👉 ทำให้ปุ่มอยู่ตรงกลาง */
+  display: block;  /* ต้องมีเพื่อให้ margin ทำงานใน inline element */
+}
+
+
+  .identity-verify-button:hover {
+    background-color: #3a538c;
+  }
+
+    .modal-terms-header{
+        text-align: center;
+        margin: 0;
+    }
+
+.modal {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9999;
+}
+/* .modal {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+} */
+ 
+.modal-content {
+  background: white;
+  width: 100%;
+  max-width: 400px;
+  margin: 10% auto;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  text-align: left;
+}
+
+.modal-content h3 {
+  text-align: center;
+  margin-bottom: 10px;
+  color: #1c294d;
+}
+
+.modal-content p ,li{
+  font-size: 14px;
+  /* line-height: 1.6; */
+  color: #000000;
+    font-family:"Anuphan", sans-serif;
+    font-weight: normal;
+}
+.modal-buttons {
+  display: flex;
+  justify-content: center;  /* ปรับตรงนี้จาก space-between */
+  gap: 10px; /* ช่องว่างระหว่างปุ่ม */
+  margin-top: 20px;
+}
+
+.modal-buttons button {
+  padding: 10px 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-family:"Anuphan", sans-serif;
+}
+
+.modal-buttons button:first-child {
+  background-color: #4d7dba;
+  color: white;
+}
+
+.modal-buttons button:last-child {
+  background-color: #ccc;
+  color: #333;
+}
+
+.modal-buttons button:hover {
+  opacity: 0.9;
+}
+
+
+
+    /* MODAL OVERLAY */
+
+
+    /* MODAL CONTENT */
+    /* #verifyModal .modal-content {
+      background-color: #fff;
+      padding: 30px 40px;
+      border-radius: 16px;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 0.3s ease-in-out;
+    } */
+/* 
+    #verifyModal h3 {
+      margin-top: 0;
+      font-size: 16px;
+      color: #2c3e50;
+      margin-bottom: 16px;
+    }
+
+    #verifyModal p {
+      color: #444;
+      font-size: 12px;
+      margin-bottom: 16px;
+      line-height: 1.7;
+    }
+
+    #verifyModal ul {
+      margin-top: -10px;
+      margin-bottom: 16px;
+      padding-left: 20px;
+    } */
+
+  
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+  </style>
+</style>
+
+
+
+<!-- MODAL -->
+<div id="verifyModal" class="modal">
+  <div class="modal-content">
+    <!-- <span class="close-btn" onclick="document.getElementById('verifyModal').style.display='none'">&times;</span> -->
+        <div class="modal-terms-header">
+            <h3>📜 ข้อตกลงการใช้เอกสารเพื่อยืนยันตัวตน</h3>
+        </div>
+    <!-- <h3>ข้อตกลงการใช้เอกสารเพื่อยืนยันตัวตน</h3> -->
+    <p style="text-indent: 2em;">
+        เพื่อป้องกันการแอบอ้างตัวตน และเพื่อความปลอดภัยของผู้ใช้งานทุกคนระบบจำเป็นต้องขอให้คุณยืนยันตัวตนด้วยเอกสารราชการ เช่น บัตรประชาชนหรือใบขับขี่
+    </p>
+
+    <p>ข้อมูลดังกล่าวจะใช้เพียงเพื่อยืนยันว่า:</p>
+    <ul>
+      <li>คุณเป็นเจ้าของบัญชีตัวจริง</li>
+      <li>คุณมีอายุครบตามเกณฑ์ที่กำหนด (18 ปีบริบูรณ์)</li>
+      <li>คุณไม่ได้ใช้ข้อมูลของบุคคลอื่นมาแอบอ้างสมัคร</li>
+    </ul>
+    <p style=" color: #b23939;">
+      ระบบจะไม่ใช้ข้อมูลของคุณเพื่อวัตถุประสงค์อื่น และจะลบเอกสารออกจากระบบโดยอัตโนมัติภายใน <strong>7 วัน</strong> หลังจากตรวจสอบเสร็จสิ้น
+    </p>
+    <!-- <p style="color: #d9534f;"><strong>หากคุณไม่สะดวกที่จะยืนยันตัวตน โปรดกด "ยกเลิก" และกลับไปยังหน้าหลัก</strong></p> -->
+
+    <div class="modal-buttons">
+      <button onclick="proceedToUpload()">ยอมรับและดำเนินการต่อ</button>
+      <button onclick="denyAndBack()">ยกเลิก</button>
+    </div>
+  </div>
+</div>
+
+<form id="identity-verify-form" method="post" enctype="multipart/form-data">
+  <h2>ยืนยันตัวตนของคุณ</h2>
+  <p>โปรดอัปโหลด:</p>
+  
+  <ol>
+    <li>ภาพถ่ายเอกสารราชการ (บัตรประชาชน, พาสปอร์ต ฯลฯ)</li>
+    <li>ภาพเซลฟี่ที่คุณถือเอกสารดังกล่าวไว้ชัดเจน (สามารถปิดเลขบัตรบางส่วนได้)</li>
+  </ol>
+
+  {% csrf_token %}
+
+   <label>ภาพเอกสารทางราชการ:</label>
+    <input type="file" name="id_card_image" accept="image/*" onchange="previewImage(this, 'cardPreview')" required>
+    <div class="identity-preview-box">
+      <img id="cardPreview" src="/static/images/id_placeholder.jpg" alt="Preview ID card">
+    </div>
+
+    <label>ภาพเซลฟี่พร้อมเอกสาร:</label>
+    <input type="file" name="selfie_image" accept="image/*" onchange="previewImage(this, 'selfiePreview')" required>
+    <div class="identity-preview-box">
+      <img id="selfiePreview" src="/static/images/selfie_placeholder.jpg" alt="Preview Selfie">
+    </div>
+    
+  <!-- <label for="id_card_image">ภาพเอกสารทางราชการ:</label>
+  <div class="identity-preview-box">
+    <img id="identity-preview-card" src="https://via.placeholder.com/300x200?text=Preview+ID+Document" alt="Preview ID">
+  </div>
+  <input type="file" id="id_card_image" name="id_card_image" accept="image/*" required onchange="identityPreviewImage(this, 'identity-preview-card')">
+
+  <label for="id_selfie_image">ภาพเซลฟี่พร้อมเอกสาร:</label>
+  <div class="identity-preview-box">
+    <img id="identity-preview-selfie" src="https://via.placeholder.com/300x200?text=Preview+Selfie" alt="Preview Selfie">
+  </div> -->
+  <!-- <input type="file" id="id_selfie_image" name="id_selfie_image" accept="image/*" required onchange="identityPreviewImage(this, 'identity-preview-selfie')"> -->
+
+  <button type="submit" class="identity-verify-button">ส่งเอกสาร</button>
+</form>
+
+
+<script>
+  function previewImage(input, previewId) {
+    const file = input.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+      document.getElementById(previewId).src = e.target.result;
+    };
+
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  }
+</script>
+<!-- 
+<script>
+  function identityPreviewImage(input, previewId) {
+    const preview = document.getElementById(previewId);
+    const file = input.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        preview.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    } else {
+      preview.src = "https://via.placeholder.com/300x200?text=No+Image";
+    }
+  }
+</script> -->
+<!-- <script>
+  function previewImage(input, previewId) {
+    const preview = document.getElementById(previewId);
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  document.getElementById('id_card_image').addEventListener('change', function () {
+    previewImage(this, 'preview_card');
+  });
+
+  document.getElementById('id_selfie_image').addEventListener('change', function () {
+    previewImage(this, 'preview_selfie');
+  });
+</script> -->
+<script>
+window.addEventListener('load', function() {
+  document.getElementById('verifyModal').style.display = 'block';
+});
+
+function proceedToUpload() {
+  document.getElementById('verifyModal').style.display = 'none';
+  document.getElementById('uploadForm').style.display = 'block';
+  window.scrollTo({ top: document.getElementById('uploadForm').offsetTop, behavior: 'smooth' });
+}
+
+function denyAndBack() {
+  // กลับไปหน้าก่อนหน้า หรือ home
+  window.location.href = "/profile";  // เปลี่ยนเส้นทางได้ตามต้องการ
+}
+</script>
